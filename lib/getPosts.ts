@@ -9,7 +9,6 @@ export interface Post {
     slug: string;
 }
 
-
 export default async function getPosts(): Promise<Post[]> {
     const postPaths = readdirSync(path.join(process.cwd(), "content"));
     const posts: Post[] = [];
@@ -21,15 +20,13 @@ export default async function getPosts(): Promise<Post[]> {
             author: metadata.author,
             lastModified: metadata.lastModified,
             category: metadata.category,
-            slug: "/" + post.replace(".mdx", ""),
+            slug: post.replace(".mdx", ""),
         });
     }
 
     // our format is 3-30-2025
     posts.sort((a, b) => {
-        const dateA = new Date(a.lastModified);
-        const dateB = new Date(b.lastModified);
-        return dateB.getTime() - dateA.getTime();
+        return new Date(a.lastModified).getTime() - new Date(b.lastModified).getTime();
     });
 
     return posts;

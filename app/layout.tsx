@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/Header";
+import Header from "@/components/header";
 
 export const mainFont = IBM_Plex_Mono({
-  weight: ["400", "700"],
+  weight: ["400", "500", "600", "700"],
   subsets: ["latin"],
 });
 
@@ -22,14 +22,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <body
-        className={`${mainFont.className} antialiased bg-gray-950 text-white p-3 md:p-4 max-w-3xl mx-auto`}
+        className={`${mainFont.className} antialiased bg-gray-950 text-white min-h-screen`}
       >
-        <Header />
-        <main className="px-2 md:px-4 py-2">
+        <div className="container max-w-3xl mx-auto px-4 md:px-6 py-4 md:py-8">
+          <Header />
           {children}
-        </main>
+        </div>
       </body>
     </html>
   );

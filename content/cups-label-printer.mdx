@@ -1,8 +1,45 @@
+import Image from "next/image";
+
 export const metadata = {
     title: "wonders and woes of CUPS and a no-name label printer",
     description: "the trials and tribulations of using CUPS and a no-name label printer together on a raspberry pi",
     author: "makors",
     lastModified: "2025-03-30",
     category: "misc",
-}
+};
 
+## The Start of the Saga
+In late 2022, I decided to purchase a [Polono PL60](https://www.amazon.com/dp/B0995JWCT1) label printer for my growing e-commerce business. It's a cheap (rebranded) label printer that doesn't support wireless printing.
+
+<Image src="https://4e4qswas41.ufs.sh/f/ckMDhYZRipUg4VXYNRQKUA7B4H3Nf9LTCVye6obI1vqiSOdZ" alt="Polono PL60" width={621 / 1.75} height={420 / 1.75} className="mx-auto" />
+<p className="text-center text-sm text-gray-400 pb-2">The Polono PL60</p>
+
+On a whim, I decided to use a Raspberry Pi to run CUPS with this printer. Easy, right?
+<br />
+
+The CUPS installation was pretty uneventful on the Raspberry Pi. I followed a [CUPS Quick Start Guide](https://documentation.ubuntu.com/server/how-to/networking/cups-print-server/index.html) and "successfully" connected the printer.
+<br />
+I tried printing a test label and... nothing happened. I checked the CUPS logs and...
+
+```
+Unable to start filter "raster-tspl" - No such file or directory
+```
+
+Oh no.
+<br />
+## Drivers... or lack thereof
+After some frantic googling, I was able to figure out that it was a driver issue. Luckily, the Polono PL60 has drivers for Linux. Problem solved, right? Not even close.
+<br />
+<Image src="https://4e4qswas41.ufs.sh/f/ckMDhYZRipUg4kfZo4RQKUA7B4H3Nf9LTCVye6obI1vqiSOd" alt="Polono PL60 Drivers Page" width={1144 / 1.75} height={235 / 1.75} className="mx-auto pb-2" />
+<p className="text-center text-sm text-gray-400 pb-2">Why are the Linux drivers so out of date?</p>
+
+I attempted to install the above drivers above (using the included script) but it didn't work because I was using an ARM device (the Raspberry Pi), but the drivers were only intended for x86_64 devices (Intel/AMD).
+<br />
+
+Google searches and AI just kept sending me down entirely unhelpful rabbit holes. No matter what I did, I couldn't even seem to find *any* driver for my printer or even some sort of solution.
+<br />
+That was until I found [this post](https://kubesail.com/blog/2022-02-01-printer-driver-in-javascript) and this [GitHub repository](https://github.com/kubesail/raster-to-tspl-js) describing my exact issue and providing a JS driver.
+
+After making some code changes (it was some old code), I was able to get the printer working. There was one glaring issue, though: it won't work with CUPS
+
+<br />

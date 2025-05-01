@@ -21,24 +21,32 @@ const nav = [
 export default function Header() {
     const pathname = usePathname();
     return (
-        <header className="flex justify-between items-center pt-1 md:pt-4 pb-2 md:pb-4">
-            <div className="flex-col">
-                <Link href="/" className="text-xl font-bold">
+        <header className="flex flex-col md:flex-row justify-between items-start md:items-center pt-4 pb-3 border-b border-gray-800 mb-4">
+            <div className="flex flex-col mb-4 md:mb-0">
+                <Link href="/" className="text-2xl font-bold hover:text-blue-400 transition-colors">
                     readme.sh
                 </Link>
-                <p className="hidden md:block text-gray-400 italic text-sm">
+                <p className="text-gray-400 italic text-sm">
                     a dev blog of sorts
                 </p>
             </div>
 
-            <nav className="flex gap-4">
-                {nav.map(
-                    (item) => (
-                        <Link href={item.path} key={item.label} className={item.path === pathname ? "text-white" : "text-gray-400"}>
-                            {item.label}
-                        </Link>
-                    )
-                )}
+            <nav className="flex gap-5">
+                {nav.map((item) => (
+                    <Link 
+                        href={item.path} 
+                        key={item.label} 
+                        className={`${
+                            item.path === pathname 
+                                ? "text-white font-medium" 
+                                : "text-gray-400 hover:text-white"
+                        } transition-colors`}
+                        target={item.path.startsWith('http') ? '_blank' : undefined}
+                        rel={item.path.startsWith('http') ? 'noopener noreferrer' : undefined}
+                    >
+                        {item.label}
+                    </Link>
+                ))}
             </nav>
         </header>
     )

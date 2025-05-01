@@ -1,3 +1,5 @@
+import { Calendar, Tag, User } from "lucide-react"
+
 export default async function Page({
     params,
 }: {
@@ -11,17 +13,17 @@ export default async function Page({
             <h1 className="text-xl">
                 {metadata.title}
             </h1>
-            <p className="text-sm text-gray-400">
-                last modified {metadata.lastModified} - authored by {metadata.author} - {metadata.category}
+            <p className="text-sm text-gray-400 flex items-center gap-1">
+                <Calendar className="size-4" /> {metadata.lastModified} - <User className="size-4" /> {metadata.author} - <Tag className="size-4" /> {metadata.category}
             </p>
-            <hr className="my-4 border-gray-800" />
+            <hr className="my-4 border-gray-800 w-2/3 border-dashed" />
             <Post />
         </div>
     )
 }
 
 export function generateStaticParams() {
-    return [{ slug: 'example' }]
+    return [{ slug: 'cups-label-printer' }]
 }
 
 export const dynamicParams = false
