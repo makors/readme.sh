@@ -1,4 +1,5 @@
 import { Calendar, Tag, User } from "lucide-react"
+import 'highlight.js/styles/github-dark.css'
 
 export default async function Page({
     params,

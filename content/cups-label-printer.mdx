@@ -1,45 +1,84 @@
-import Image from "next/image";
-
 export const metadata = {
-    title: "wonders and woes of CUPS and a no-name label printer",
-    description: "the trials and tribulations of using CUPS and a no-name label printer together on a raspberry pi",
+    title: "Wonders and Woes of CUPS and a No-Name Label Printer",
+    description: "The trials and tribulations of using CUPS and a no-name label printer together on a Raspberry Pi",
     author: "makors",
-    lastModified: "2025-03-30",
+    lastModified: "2025-06-14",
     category: "misc",
 };
 
 ## The Start of the Saga
+
 In late 2022, I decided to purchase a [Polono PL60](https://www.amazon.com/dp/B0995JWCT1) label printer for my growing e-commerce business. It's a cheap (rebranded) label printer that doesn't support wireless printing.
 
-<Image src="https://4e4qswas41.ufs.sh/f/ckMDhYZRipUg4VXYNRQKUA7B4H3Nf9LTCVye6obI1vqiSOdZ" alt="Polono PL60" width={621 / 1.75} height={420 / 1.75} className="mx-auto" />
-<p className="text-center text-sm text-gray-400 pb-2">The Polono PL60</p>
+![The Polono PL60](https://4e4qswas41.ufs.sh/f/ckMDhYZRipUg4VXYNRQKUA7B4H3Nf9LTCVye6obI1vqiSOdZ)
 
-On a whim, I decided to use a Raspberry Pi to run CUPS with this printer. Easy, right?
-<br />
+On a peaceful Friday, I decided to make my label printer wireless with CUPS, a print server, so that I could print labels from anywhere. Easy, right?
 
-The CUPS installation was pretty uneventful on the Raspberry Pi. I followed a [CUPS Quick Start Guide](https://documentation.ubuntu.com/server/how-to/networking/cups-print-server/index.html) and "successfully" connected the printer.
-<br />
-I tried printing a test label and... nothing happened. I checked the CUPS logs and...
+After uneventfully setting up CUPS on a Raspberry Pi, I hooked up my Polono PL60 and started a test print through the dashboard. As you can probably tell, it didn't work. I checked the CUPS logs and found this error:
 
 ```
 Unable to start filter "raster-tspl" - No such file or directory
 ```
 
-Oh no.
-<br />
-## Drivers... or lack thereof
-After some frantic googling, I was able to figure out that it was a driver issue. Luckily, the Polono PL60 has drivers for Linux. Problem solved, right? Not even close.
-<br />
-<Image src="https://4e4qswas41.ufs.sh/f/ckMDhYZRipUg4kfZo4RQKUA7B4H3Nf9LTCVye6obI1vqiSOd" alt="Polono PL60 Drivers Page" width={1144 / 1.75} height={235 / 1.75} className="mx-auto pb-2" />
-<p className="text-center text-sm text-gray-400 pb-2">Why are the Linux drivers so out of date?</p>
+## Drivers... or Lack Thereof
 
-I attempted to install the above drivers above (using the included script) but it didn't work because I was using an ARM device (the Raspberry Pi), but the drivers were only intended for x86_64 devices (Intel/AMD).
-<br />
+After a little bit of searching, I was able to figure out that this was a driver issue. Luckily, the Polono PL60 has drivers for Linux (see below).
 
-Google searches and AI just kept sending me down entirely unhelpful rabbit holes. No matter what I did, I couldn't even seem to find *any* driver for my printer or even some sort of solution.
-<br />
-That was until I found [this post](https://kubesail.com/blog/2022-02-01-printer-driver-in-javascript) and this [GitHub repository](https://github.com/kubesail/raster-to-tspl-js) describing my exact issue and providing a JS driver.
+![Why are the Linux drivers so out of date?](https://4e4qswas41.ufs.sh/f/ckMDhYZRipUg4kfZo4RQKUA7B4H3Nf9LTCVye6obI1vqiSOd)
 
-After making some code changes (it was some old code), I was able to get the printer working. There was one glaring issue, though: it won't work with CUPS
+After installing the drivers, I rebooted and started to daydream about the thought of my new wireless label printer. Those dreams came crashing down when I checked the logs again and saw the exact same error.
 
-<br />
+The new drivers weren't registering at all, as they are meant for x86_64 devices, while my CUPS server was on ARM. This *would* be an easy fix if Polono provided driver for ARM, but they don't.
+
+## A Solution?
+
+While searching for a solution, I came across [this blog post](https://kubesail.com/blog/2022-02-01-printer-driver-in-javascript) which linked to this [GitHub repository](https://github.com/kubesail/raster-to-tspl-js) describing my exact issue and providing a JavaScript-based driver solution.
+
+I won't bore you with the details, but the GitHub repository just converts an image into TSPL, a format that the printer can actually understand. The code roughly looks like this:
+
+```javascript
+const label = Buffer.concat([
+    Buffer.alloc(512), // 512 NUL bytes to start a new label
+    Buffer.from("\r\nSIZE 99.8 mm, 149.9 mm"),
+    Buffer.from("\r\nSET TEAR ON"),
+    Buffer.from("\r\nSET CUTTER OFF"),
+    Buffer.from("\r\nSET PEEL OFF"),
+    Buffer.from("\r\nCLS"),
+    Buffer.from("\r\nBITMAP 0,0,100,1198,1,"),
+    img, // converted earlier in the code
+    Buffer.from("\r\nPRINT 1,1"),
+    Buffer.from("\r\n"),
+]);
+```
+
+I want to reiterate that this "driver" is **JavaScript-based**, while CUPS is in C. I was able to get the printer to print out an image, but it won't work like an actual printer and would require a custom tool to easily use.
+
+There was still some hope though.
+
+## Cryptic Instructions
+
+I was able to find [this article on Hackaday.io](https://hackaday.io/project/184984-cheap-poshmark-label-printer-iphone-airprint) detailing the process of setting up a Polono PL60 with CUPS. At the time though, these instructions seemed quite confusing, and I ended up wrecking my Debian installation on the CUPS server.
+
+![](https://4e4qswas41.ufs.sh/f/ckMDhYZRipUg1xD68qtLwBUCOol5AQu8d39KPRWenZ2jyFfb)
+
+Shortly after I took a roughly 20 minute break to rethink everything, I decided to take another look at the GitHub repository in the Hackaday post which supports my Polono PL60. There was one caveat: no instructions were provided, so I was *still* helpless.
+
+![Thanks proski!](https://4e4qswas41.ufs.sh/f/ckMDhYZRipUgOeAM7hVipA0YQ2Gtxfkv1j4F78cRVubWBICX)
+
+## A Resolution, at Last
+
+By sheer luck, I was able to find [this GitHub repository](https://github.com/thorrak/rpi-tspl-cups-driver) by [thorrak](https://github.com/thorrak) which links to proski's repo and the Hackaday post from earlier. Instructions and some basic information were provided, but aren't very clear to the average person.
+
+![The Solution](https://4e4qswas41.ufs.sh/f/ckMDhYZRipUgpIZ0G6OdtTO2v0XhuPE8JbjqmHVFclQzDr5x)
+
+I decided to check the GitHub issues and **finally** found [a solution from f-o-n](https://github.com/thorrak/rpi-tspl-cups-driver/issues/2#issuecomment-1710222355). I carefully followed the instructions, restarted the Raspberry Pi, and plugged in the printer. This was the moment I've spent hours upon hours working towards.
+
+![](https://4e4qswas41.ufs.sh/f/ckMDhYZRipUgCMtookw3NswVAUWIzpxlfXuJEOt14GZbS0mv)
+
+When I hit print, a couple of seconds passed and nothing happened. A few seconds later, the printer started making noise and successfully completed a test print. Of course, I decided to profusely thank [f-o-n](https://github.com/f-o-n) on the issue.
+
+## Conclusion
+
+This journey offered more depth into the world of CUPS and ARM than was initially anticipated. Even though it may not seem like it at times, the solution may actually be closer than it looks.
+
+Check out my [GitHub](https://github.com/makors) or email me at makors@readme.sh.

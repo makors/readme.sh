@@ -1,11 +1,7 @@
-'use server';
-
-import getPosts from "@/lib/getPosts";
 import Link from "next/link";
+import { Post } from "@/app/page";
 
-export default async function AllPosts() {
-    const posts = await getPosts();
-
+export default async function AllPosts({ posts }: { posts: Post[] }) {
     return (
         <div className="space-y-6">
             {posts.map((post) => (

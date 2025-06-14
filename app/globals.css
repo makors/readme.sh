@@ -118,3 +118,43 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* custom prose improvements for better spacing */
+@layer components {
+  .prose {
+    /* improve line height for better readability */
+    line-height: 1.7;
+  }
+  
+  /* better spacing for inline code */
+  .prose :not(pre) > code {
+    @apply bg-gray-800 px-1.5 py-0.5 rounded text-sm;
+  }
+  
+  /* remove top padding from the first heading in content and first heading after hr */
+  .prose h1:first-child,
+  .prose h2:first-child,
+  .prose h3:first-child,
+  .prose h4:first-child,
+  .prose h5:first-child,
+  .prose h6:first-child,
+  .prose hr + h1,
+  .prose hr + h2,
+  .prose hr + h3,
+  .prose hr + h4,
+  .prose hr + h5,
+  .prose hr + h6 {
+    padding-top: 0 !important;
+  }
+  
+  /* better spacing for images and figures */
+  .prose img,
+  .prose figure {
+    @apply mt-8 mb-4;
+  }
+  
+  /* improve blockquote styling */
+  .prose blockquote {
+    @apply border-l-4 border-gray-600 bg-gray-900/30 rounded-r-lg;
+  }
+}
