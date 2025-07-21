@@ -115,7 +115,38 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground transition-colors duration-300;
+  }
+  
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    @apply bg-gray-100 dark:bg-gray-900;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    @apply bg-gray-300 dark:bg-gray-700 rounded-full;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-400 dark:bg-gray-600;
+  }
+  
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  /* Selection styling */
+  ::selection {
+    @apply bg-blue-500/20 text-blue-700 dark:text-blue-300;
+  }
+  
+  ::-moz-selection {
+    @apply bg-blue-500/20 text-blue-700 dark:text-blue-300;
   }
 }
 
@@ -124,11 +155,49 @@
   .prose {
     /* improve line height for better readability */
     line-height: 1.7;
+    @apply text-gray-700 dark:text-gray-300;
+  }
+  
+  .prose h1 {
+    @apply text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-6 mt-8;
+  }
+  
+  .prose h2 {
+    @apply text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-4 mt-8;
+  }
+  
+  .prose h3 {
+    @apply text-xl md:text-2xl font-semibold text-gray-900 dark:text-white mb-3 mt-6;
+  }
+  
+  .prose h4 {
+    @apply text-lg md:text-xl font-semibold text-gray-900 dark:text-white mb-2 mt-4;
+  }
+  
+  .prose p {
+    @apply mb-4 leading-relaxed;
+  }
+  
+  .prose ul, .prose ol {
+    @apply mb-4 pl-6;
+  }
+  
+  .prose li {
+    @apply mb-2;
   }
   
   /* better spacing for inline code */
   .prose :not(pre) > code {
-    @apply bg-gray-800 px-1.5 py-0.5 rounded text-sm;
+    @apply bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded-md text-sm font-mono text-blue-600 dark:text-blue-300 border border-gray-200 dark:border-gray-700;
+  }
+  
+  /* code block improvements */
+  .prose pre {
+    @apply bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-4 overflow-x-auto;
+  }
+  
+  .prose pre code {
+    @apply text-gray-800 dark:text-gray-300 font-mono text-sm;
   }
   
   /* remove top padding from the first heading in content and first heading after hr */
@@ -150,11 +219,93 @@
   /* better spacing for images and figures */
   .prose img,
   .prose figure {
-    @apply mt-8 mb-4;
+    @apply mt-8 mb-4 rounded-lg;
   }
   
   /* improve blockquote styling */
   .prose blockquote {
-    @apply border-l-4 border-gray-600 bg-gray-900/30 rounded-r-lg;
+    @apply border-l-4 border-blue-500 bg-blue-50 dark:bg-blue-500/10 rounded-r-lg p-4 italic text-gray-700 dark:text-gray-300;
+  }
+  
+  /* table improvements */
+  .prose table {
+    @apply w-full border-collapse border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden;
+  }
+  
+  .prose th {
+    @apply bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white font-semibold p-3 text-left border-b border-gray-200 dark:border-gray-700;
+  }
+  
+  .prose td {
+    @apply p-3 border-b border-gray-200 dark:border-gray-700;
+  }
+  
+  .prose tr:hover {
+    @apply bg-gray-50 dark:bg-gray-800/50;
+  }
+  
+  /* link improvements */
+  .prose a {
+    @apply text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 underline decoration-blue-500/50 hover:decoration-blue-400 transition-colors duration-200;
+  }
+  
+  /* horizontal rule improvements */
+  .prose hr {
+    @apply border-gray-200 dark:border-gray-700 my-8;
+  }
+  
+  /* list improvements */
+  .prose ul > li::marker {
+    @apply text-blue-500 dark:text-blue-400;
+  }
+  
+  .prose ol > li::marker {
+    @apply text-blue-500 dark:text-blue-400 font-semibold;
+  }
+}
+
+/* Animation utilities */
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 0.6s ease-out forwards;
+  }
+  
+  .animate-slide-up {
+    animation: slideUp 0.6s ease-out forwards;
+  }
+  
+  .animate-scale-in {
+    animation: scaleIn 0.4s ease-out forwards;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
 }

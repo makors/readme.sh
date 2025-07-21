@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import { Providers } from "@/components/providers";
 
 const mainFont = IBM_Plex_Mono({
   weight: ["400", "500", "600", "700"],
@@ -22,16 +24,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" suppressHydrationWarning>
       <body
-        className={`${mainFont.className} antialiased bg-[#0d1117] text-[#c9d1d9] min-h-screen`}
+        className={`${mainFont.className} antialiased bg-[#0d1117] text-[#c9d1d9] min-h-screen flex flex-col`}
       >
-        <div className="container max-w-4xl mx-auto px-4 md:px-6 py-6 md:py-12">
+        <Providers>
           <Header />
-          <main className="prose prose-invert prose-pre:bg-[#161b22] prose-pre:border prose-pre:border-[#30363d] max-w-none">
-            {children}
+          <main className="flex-1 container max-w-4xl mx-auto px-4 md:px-6 py-8 md:py-12">
+            <div className="prose prose-invert prose-pre:bg-[#161b22] prose-pre:border prose-pre:border-[#30363d] max-w-none">
+              {children}
+            </div>
           </main>
-        </div>
+          <Footer />
+        </Providers>
       </body>
     </html>
   );
