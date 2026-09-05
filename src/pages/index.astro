@@ -1,0 +1,20 @@
+---
+import Base from "@/layouts/Base.astro";
+import PostList from "@/components/PostList.astro";
+import { getPosts } from "@/lib/posts";
+const posts = await getPosts();
+---
+
+<Base>
+  <section class="hero">
+    <h1 class="display">readme.sh is a place to think in writing.</h1>
+    <p>
+      Mostly about software, systems, and the things that break along the way.
+      Written by <a href="/about">makors</a>.
+    </p>
+  </section>
+
+  <section aria-label="Writing">
+    <PostList posts={posts} />
+  </section>
+</Base>

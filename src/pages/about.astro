@@ -1,0 +1,27 @@
+---
+import Base from "@/layouts/Base.astro";
+import { site } from "@/lib/site";
+---
+
+<Base title="About" description="About makors and this site.">
+  <header class="page-header">
+    <h1 class="display">About</h1>
+  </header>
+  <div class="prose">
+    <p>
+      I'm <a href={site.github}>makors</a>, and I think a <em>lot</em>. This site is
+      where I will write my thinking on systems, the world, or really anything else.
+      Content on this site is licensed under{" "}
+      <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a>.
+    </p>
+    <p>You can reach me at:</p>
+    <ul>
+      <li><a href={`mailto:${site.email}`}>{site.email}</a></li>
+      <li>makors on Discord</li>
+      <li><a href={site.github}>makors on GitHub</a>, if you open a PR to fix something :)</li>
+    </ul>
+    <p>
+      <a class="quiet" href="https://en.wikipedia.org/wiki/Machine-readable_passport" aria-label="Machine-readable passport">{"<<<"}</a>
+    </p>
+  </div>
+</Base>

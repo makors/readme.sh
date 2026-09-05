@@ -1,0 +1,32 @@
+---
+import { render } from "astro:content";
+import Base from "@/layouts/Base.astro";
+import NoBreakHyphens from "@/components/NoBreakHyphens.astro";
+import { getPosts, formatDate, readingTime } from "@/lib/posts";
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const { title, description, date, updated } = post.data;
+---
+
+<Base title={title} description={description} type="article">
+  <article>
+    <header class="article-header">
+      <h1 class="display"><NoBreakHyphens text={title} /></h1>
+      <p class="lede">{description}</p>
+      <div class="byline">
+        <time datetime={date.toISOString()}>{formatDate(date)}</time>
+        {updated && <span>Updated {formatDate(updated)}</span>}
+        <span>{readingTime(post.body)}</span>
+      </div>
+    </header>
+    <div class="prose">
+      <Content />
+    </div>
+  </article>
+</Base>

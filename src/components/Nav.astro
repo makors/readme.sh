@@ -1,0 +1,20 @@
+---
+import { site } from "@/lib/site";
+const path = Astro.url.pathname;
+const links = [
+  { href: "/", label: "Writing", active: path === "/" || path.startsWith("/posts") },
+  { href: "/about", label: "About", active: path.startsWith("/about") },
+];
+---
+
+<header class="wrap">
+  <nav class="nav" aria-label="Main">
+    <a class="wordmark" href="/">{site.name}</a>
+    <ul>
+      {links.map((l) => (
+        <li><a href={l.href} aria-current={l.active ? "page" : undefined}>{l.label}</a></li>
+      ))}
+      <li><a href="/rss.xml">RSS</a></li>
+    </ul>
+  </nav>
+</header>
